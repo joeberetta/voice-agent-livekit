@@ -1,11 +1,12 @@
 import { z } from 'zod';
-import { ProductRAG, type ProductSearchOptions } from '../rag/product-rag.js';
+import { EnhancedProductRAG } from '../rag/enhanced-product-rag.js';
+import { type ProductSearchOptions } from '../rag/product-rag.js';
 
 export class ProductFunctions {
-  private productRAG: ProductRAG;
+  private productRAG: EnhancedProductRAG;
 
   constructor() {
-    this.productRAG = new ProductRAG();
+    this.productRAG = new EnhancedProductRAG();
   }
 
   getFunctionContext() {

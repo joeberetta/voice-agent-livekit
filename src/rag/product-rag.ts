@@ -158,7 +158,8 @@ export class ProductRAG {
       underwear: 'Нижнее белье',
     };
 
-    return `Товар: ${product.name}
+    return `Товар id: ${product.id}
+Название: ${product.name}
 Категория: ${categoryNames[product.category] || product.category} - ${product.subcategory}
 Цена: ${product.price} руб.
 Описание: ${product.description}

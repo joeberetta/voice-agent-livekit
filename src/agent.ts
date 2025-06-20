@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { type JobContext, WorkerOptions, cli, defineAgent, llm, multimodal } from '@livekit/agents';
 import * as openai from '@livekit/agents-plugin-openai';
+import { BackgroundVoiceCancellation } from '@livekit/noise-cancellation-node';
 import dotenv from 'dotenv';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -45,13 +46,23 @@ export default defineAgent({
 
       const model = new openai.realtime.RealtimeModel({
         instructions: systemPrompt,
+        turnDetection: {
+          type: 'server_vad',
+          threshold: 0.6,
+          prefix_padding_ms: 200,
+          silence_duration_ms: 500,
+        },
       });
 
       // Настраиваем функции для работы с товарами
       const productFunctions = new ProductFunctions();
       const fncCtx: llm.FunctionContext = productFunctions.getFunctionContext();
 
-      agent = new multimodal.MultimodalAgent({ model, fncCtx });
+      agent = new multimodal.MultimodalAgent({
+        model,
+        fncCtx,
+        noiseCancellation: BackgroundVoiceCancellation(),
+      });
 
       // Обрабатываем события комнаты
       ctx.room.on('participantDisconnected', (disconnectedParticipant) => {
